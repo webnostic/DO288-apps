@@ -95,7 +95,7 @@ pipeline {
             //TODO: Watch deployment until pod is in 'Running' state
 	  script {
 		openshift.withCluster(){
-			openshift.withProject(${DEV_PROJECT){
+			openshift.withProject(env.DEV_PROJECT){
 				def dc=openshift.selector("dc", ${APP_NAME})
 				def pods=dc.related("pods")
 				pods.untilEach(1){
@@ -145,7 +145,7 @@ pipeline {
                     routeHost = readFile('routehost').trim()
 
                     openshift.withCluster() {
-                        openshift.withProject( "${STAGE_PROJECT}" ) {
+                        openshift.withProject(env.STAGE_PROJECT) {
                             def deployment = openshift.selector("dc", "${APP_NAME}").rollout()
                             openshift.selector("dc", "${APP_NAME}").related('pods').untilEach(1) {
                                 return (it.object().status.phase == "Running")
